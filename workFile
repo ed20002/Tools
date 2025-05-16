@@ -1,0 +1,31 @@
+
+const fs = require('fs');
+const path = require('path');
+
+function walkDir(dir, fileList = []) {
+    const files = fs.readdirSync(dir);
+    
+    files.forEach(file => {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+        
+        if (stat.isDirectory()) {
+            walkDir(filePath, fileList);
+        } else {
+            fileList.push({
+                name: file,
+                path: filePath,
+                size: stat.size,
+                modified: stat.mtime
+            });
+        }
+    });
+    
+    return fileList;
+}
+
+// 使用示例
+const targetDir = './'; // 要遍历的目录
+const result = walkDir(targetDir);
+fs.writeFileSync('files.json', JSON.stringify(result, null, 2));
+console.log('文件列表已保存到files.json');
