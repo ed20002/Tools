@@ -61,8 +61,15 @@ function StartScan(dir, fileList = []) {
 }
 
 // 使用示例
-const targetDir = './assets'; // 要遍历的目录
-StartScan(targetDir);
-const result = {Prefab:prefabs, Scene:scenes, Other:others};
+let result     = {};
+let baseUrl    = "./assets/AssetPackage/";
+let bundleFile = ["Common", "Hall", "Loading"];
+for (let name of bundleFile){
+    StartScan(baseUrl + name);
+    result[name] = {Prefab:prefabs, Scene:scenes, Other:others};
+    prefabs = [];
+    scenes  = [];
+    others  = [];
+}
 fs.writeFileSync('files.json', JSON.stringify(result, null, 2));
 console.log('文件列表已保存到files.json');
